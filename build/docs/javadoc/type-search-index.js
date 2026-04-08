@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html","k":"18"},{"p":"me.antifreecam.config","l":"AntiFrecamConfig"},{"p":"me.antifreecam","l":"AntiFreecamMod"},{"p":"me.antifreecam.mixin","l":"PlayerChunkSenderMixin"}];updateSearchResults();

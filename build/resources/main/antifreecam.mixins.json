@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "me.antifreecam.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PlayerChunkSenderMixin",
+    "PlayerMoveMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "antifreecam",
+  "version": "1.0.0",
+  "name": "AntiFreecam",
+  "description": "No stupid freecam cheaters",
+  "authors": [],
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "me.antifreecam.AntiFreecamMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api": "*",
+    "minecraft": "~1.21.11"
+  },
+  "mixins": [
+    "antifreecam.mixins.json"
+  ]
+}
