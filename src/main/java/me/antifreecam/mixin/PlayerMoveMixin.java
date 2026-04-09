@@ -1,5 +1,6 @@
 package me.antifreecam.mixin;
 
+import me.antifreecam.AntiFreecamCommand;
 import me.antifreecam.AntiFreecamMod;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -8,6 +9,7 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +30,12 @@ public class PlayerMoveMixin {
 
     @Inject(method = "handleMovePlayer", at = @At("TAIL"))
     private void onPlayerMove(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
+        if (!AntiFreecamMod.CONFIG.enabled) return;
+
         ServerPlayer player = ((ServerGamePacketListenerImpl)(Object)this).player;
+        if (AntiFreecamCommand.isExempt(player)) return;
+        if (player.level().dimension().equals(Level.NETHER)) return;
+
         int effectiveY = Math.min((int) Math.floor(player.getY()), AntiFreecamMod.CONFIG.surfaceThreshold);
         int currentSection = Math.floorDiv(effectiveY, 16);
 
@@ -43,6 +50,7 @@ public class PlayerMoveMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     private void onTick(CallbackInfo ci) {
         if (pendingChunkResends.isEmpty()) return;
+        if (!AntiFreecamMod.CONFIG.enabled) return;
         ServerPlayer player = ((ServerGamePacketListenerImpl)(Object)this).player;
         ServerLevel level = (ServerLevel) player.level();
 
@@ -62,6 +70,10 @@ public class PlayerMoveMixin {
         int chunkX = (int) Math.floor(player.getX()) >> 4;
         int chunkZ = (int) Math.floor(player.getZ()) >> 4;
         int viewDistance = level.getServer().getPlayerList().getViewDistance();
+
+        //int effectiveY = Math.min((int) Math.floor(player.getY()), AntiFreecamMod.CONFIG.surfaceThreshold);
+        //boolean underground = effectiveY < AntiFreecamMod.CONFIG.surfaceThreshold;
+        //int viewDistance = underground ? 4 : level.getServer().getPlayerList().getViewDistance();
 
         // Collect and sort by distance so nearest chunks send first
         List<LevelChunk> chunks = new ArrayList<>();

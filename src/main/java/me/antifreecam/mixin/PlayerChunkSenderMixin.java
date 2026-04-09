@@ -1,5 +1,6 @@
 package me.antifreecam.mixin;
 
+import me.antifreecam.AntiFreecamCommand;
 import me.antifreecam.AntiFreecamMod;
 import net.fabricmc.fabric.mixin.event.interaction.ServerPlayNetworkHandlerInteractEntityHandlerMixin;
 import net.minecraft.core.Holder;
@@ -17,6 +18,7 @@ import net.minecraft.server.network.PlayerChunkSender;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,12 +53,15 @@ public class PlayerChunkSenderMixin {
         if (!AntiFreecamMod.CONFIG.enabled) return;
 
         ServerPlayer player = connection.player;
+        if (AntiFreecamCommand.isExempt(player)) return;
+        if (player.level().dimension().equals(Level.NETHER)) return;
+
         int playerY = (int) Math.floor(player.getY());
 
         // Build and send the masked packet manually
         ClientboundLevelChunkWithLightPacket fakePacket = buildMaskedPacket(chunk, level, player);
         connection.send(fakePacket);
-        System.out.println("sent fake");
+
         ci.cancel();
     }
 }

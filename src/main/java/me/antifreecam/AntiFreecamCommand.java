@@ -1,12 +1,25 @@
 package me.antifreecam;
 
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.Permissions;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class AntiFreecamCommand {
     private static final Set<UUID> exemptPlayers = new HashSet<>();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("antifreecam")
-                        .requires(source -> source.hasPermission(2)) // op level 2
+                        .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR)) // op level 2
                         .then(Commands.literal("exempt")
                                 .then(Commands.argument("player", EntityArgument.player())
                                         .then(Commands.literal("add")

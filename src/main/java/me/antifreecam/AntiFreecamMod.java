@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.GiveCommand;
 import net.minecraft.server.permissions.Permissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,10 @@ public class AntiFreecamMod implements ModInitializer {
         CONFIG = AntiFrecamConfig.load();
         LOGGER.info("[AntiFreecam] Loaded. Y-range: ±{} sections, Surface threshold: Y={}",
                 CONFIG.sectionRadius, CONFIG.surfaceThreshold);
+
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+                AntiFreecamCommand.register(dispatcher));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(

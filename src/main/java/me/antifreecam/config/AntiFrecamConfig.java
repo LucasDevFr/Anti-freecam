@@ -25,12 +25,13 @@ public class AntiFrecamConfig {
     private static final Path CONFIG_PATH = Paths.get("config", "antifreecam.properties");
 
     public boolean enabled          = true;
+    public int     engineMode    = 1;
     /** Number of chunk sections (16 blocks each) revealed above and below the player. */
     public int     sectionRadius    = 2;
     /** Y level at or above which players get full unmasked chunk data. */
     public int     surfaceThreshold = 62;
     /** Block used to fill masked sections (must be a valid block ID, e.g. "stone"). */
-    public String  maskBlock        = "stone";
+    public String  maskBlock        = "air";
 
     private AntiFrecamConfig() {}
 
@@ -50,9 +51,10 @@ public class AntiFrecamConfig {
             }
 
             cfg.enabled           = Boolean.parseBoolean(props.getProperty("enabled",           "true"));
+            cfg.engineMode        = Integer.parseInt(    props.getProperty("engineMode",     "1"));
             cfg.sectionRadius     = Integer.parseInt(    props.getProperty("sectionRadius",     "2"));
             cfg.surfaceThreshold  = Integer.parseInt(    props.getProperty("surfaceThreshold",  "62"));
-            cfg.maskBlock         =                      props.getProperty("maskBlock",          "stone");
+            cfg.maskBlock         =                      props.getProperty("maskBlock",          "air");
 
         } catch (Exception e) {
             AntiFreecamMod.LOGGER.error("[AntiFreecam] Failed to load config, using defaults", e);
@@ -65,6 +67,7 @@ public class AntiFrecamConfig {
         try {
             Properties props = new Properties();
             props.setProperty("enabled",          String.valueOf(enabled));
+            props.setProperty("engineMode",       String.valueOf(engineMode));
             props.setProperty("sectionRadius",    String.valueOf(sectionRadius));
             props.setProperty("surfaceThreshold", String.valueOf(surfaceThreshold));
             props.setProperty("maskBlock",        maskBlock);
@@ -73,6 +76,8 @@ public class AntiFrecamConfig {
                 props.store(out,
                     "AntiFrecam configuration\n" +
                     "# enabled           - master on/off switch\n" +
+                    "# engineMode        - Switches how the masked chunks are hidden\n" +
+                    "#                     1 = fill with maskblock, 2 = copy current chunk\n" +
                     "# sectionRadius     - chunk sections (16 blocks each) revealed above/below player\n" +
                     "#                     2 = ±32 blocks,  3 = ±48 blocks\n" +
                     "# surfaceThreshold  - Y at/above which players get full data (surface players)\n" +
